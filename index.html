@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="База знаний Verta Forms: выдача свидетельства АГР в Москве" />
+  <title>АГР Москва — база знаний</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <style>
+    :root {
+      --theme-color: #1f5c4d;
+      --agr-ink: #14201c;
+      --agr-muted: #5a6b64;
+      --agr-line: #d5e0db;
+      --agr-surface: #ffffff;
+    }
+
+    /*
+      Десктоп: Docsify держит .content absolute на высоту экрана.
+      Скролл внутри .content + overflow:hidden на body — иначе фон
+      обрывается по 100vh.
+
+      Мобилка (≤768px): тема Docsify ставит .content { position: static }.
+      Тогда overflow:hidden на body блокирует прокрутку всей страницы —
+      сайдбар ещё ездит (у него свой overflow), а статья — нет.
+    */
+    html,
+    body {
+      margin: 0;
+      background: var(--agr-surface);
+    }
+
+    body {
+      font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: var(--agr-ink);
+    }
+
+    main {
+      background: var(--agr-surface);
+    }
+
+    .app-name-link {
+      font-family: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .sidebar {
+      background: var(--agr-surface);
+      border-right: 1px solid var(--agr-line);
+    }
+
+    .sidebar ul li a {
+      color: var(--agr-ink);
+    }
+
+    .sidebar ul li.active > a {
+      color: var(--theme-color);
+      font-weight: 600;
+    }
+
+    .content {
+      padding-top: 1.5rem;
+      background: var(--agr-surface);
+    }
+
+    .markdown-section {
+      max-width: 820px;
+      background: var(--agr-surface);
+    }
+
+    @media screen and (min-width: 769px) {
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .content {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      main {
+        height: auto !important;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      .content {
+        position: static !important;
+        overflow: visible !important;
+        max-width: 100vw;
+        padding-top: 1.25rem;
+      }
+    }
+
+    .markdown-section h1,
+    .markdown-section h2,
+    .markdown-section h3 {
+      font-family: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      color: var(--agr-ink);
+    }
+
+    .markdown-section a {
+      color: var(--theme-color);
+    }
+
+    .markdown-section code,
+    .markdown-section pre {
+      background: #eef3f0;
+    }
+
+    .markdown-section blockquote {
+      border-left-color: var(--theme-color);
+      color: var(--agr-muted);
+    }
+
+    .search input {
+      background: #fff;
+      border: 1px solid var(--agr-line);
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app">Загрузка базы знаний…</div>
+  <script>
+    // Корень сайта: / локально, /agr-knowlegde/ на Project Pages.
+    var BASE = location.pathname
+      .replace(/index\.html$/i, "")
+      .replace(/\/?$/, "/");
+
+    window.$docsify = {
+      name: "АГР Москва",
+      nameLink: BASE,
+      repo: "IvanMochalov/agr-knowlegde-public",
+      basePath: BASE,
+      homepage: "wiki/index.md",
+      loadSidebar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      relativePath: false,
+      // Относительно basePath; полный /agr-knowlegde/_sidebar.md даёт удвоение пути.
+      alias: {
+        "/.*/_sidebar.md": "_sidebar.md"
+      },
+      search: {
+        paths: "auto",
+        placeholder: "Поиск по базе…",
+        noData: "Ничего не найдено",
+        depth: 4
+      },
+      noEmoji: true,
+      plugins: [
+        function (hook, vm) {
+          function joinPath(dir, rel) {
+            var parts = (dir + rel).split("/");
+            var out = [];
+            for (var i = 0; i < parts.length; i++) {
+              var p = parts[i];
+              if (!p || p === ".") continue;
+              if (p === "..") out.pop();
+              else out.push(p);
+            }
+            return out.join("/");
+          }
+
+          hook.beforeEach(function (content) {
+            content = content.replace(
+              /\[\[([^\]|#]+)(?:\|([^\]]+))?\]\]/g,
+              function (_match, target, label) {
+                var slug = String(target).trim();
+                var text = label ? String(label).trim() : slug;
+                return "[" + text + "](" + slug + ".md)";
+              }
+            );
+
+            var file = (vm.route && vm.route.file) || vm.config.homepage || "";
+            var dir = file.replace(/[^/]*$/, "");
+
+            return content.replace(
+              /\[([^\]]+)\]\(([^)]+)\)/g,
+              function (match, text, href) {
+                if (/^(https?:|mailto:|\/\/)/i.test(href) || href.charAt(0) === "#" || href.charAt(0) === "/") {
+                  return match;
+                }
+                var hash = "";
+                var pathOnly = href;
+                var hashAt = href.indexOf("#");
+                if (hashAt >= 0) {
+                  pathOnly = href.slice(0, hashAt);
+                  hash = href.slice(hashAt);
+                }
+                var resolved = joinPath(dir, pathOnly);
+                return "[" + text + "](/" + resolved + hash + ")";
+              }
+            );
+          });
+        }
+      ]
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+</body>
+</html>
