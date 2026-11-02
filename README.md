@@ -1,46 +1,28 @@
 # AGR Knowledge (public) — база знаний Verta Forms
 
-Публичная wiki по процессу выдачи свидетельства АГР в Москве: процесс города, модели/комплект, FAQ и разговор с заказчиком.
+Публичная wiki по процессу выдачи свидетельства АГР в Москве: процесс города, модели и комплект, FAQ и разговор с заказчиком.
 
 Внутренний калькулятор, бланки КП и формулы наценок — в отдельном **private**-репозитории и сюда не входят.
-
-## Сайт (GitHub Pages)
-
-**https://ivanmochalov.github.io/agr-knowlegde-public/**
-
-Включение один раз: **Settings → Pages → Deploy from a branch → `main` / `/ (root)` → Save**.
-
-Сайт на [Docsify](https://docsify.js.org): те же `.md` из `wiki/`, дерево слева, поиск.
-
-Локально:
-
-```bash
-python3 -m http.server 4173
-```
-
-Откройте http://127.0.0.1:4173/
 
 ## С чего начать
 
 | Куда | Зачем |
 | --- | --- |
-| [Сайт на Pages](https://ivanmochalov.github.io/agr-knowlegde-public/) | Чтение в браузере |
 | [`wiki/index.md`](wiki/index.md) | Каталог базы знаний |
-| [`wiki/README.md`](wiki/README.md) | Что такое wiki |
-| [`wiki/AGENTS.md`](wiki/AGENTS.md) | Правила сопровождения |
+| [`wiki/process/процесс-выдачи-агр.md`](wiki/process/процесс-выдачи-агр.md) | Сквозной путь от идеи до свидетельства |
+| [`wiki/team/faq-менеджера.md`](wiki/team/faq-менеджера.md) | Короткие ответы на типовые вопросы |
+| [`wiki/AGENTS.md`](wiki/AGENTS.md) | Правила сопровождения wiki |
 | [`wiki/log.md`](wiki/log.md) | Журнал изменений |
 
 ## Структура
 
 ```
 agr-knowlegde-public/
-├── README.md
-├── index.html         ← Docsify
+├── wiki/              ← база знаний
+│   ├── concepts/      ← термины и комплект моделей
+│   ├── process/       ← процесс города и подача
+│   ├── team/          ← роль команды, FAQ, разговор с заказчиком
+│   └── raw/           ← снимки внешних источников
 ├── _sidebar.md
-├── .nojekyll
-└── wiki/              ← публичная база знаний
-    ├── concepts/
-    ├── process/
-    ├── team/
-    └── raw/
+└── index.html
 ```
